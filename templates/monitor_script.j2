@@ -1,0 +1,64 @@
+#!/bin/bash
+#
+# This script is part of the ansible role victorklos.ondemand-server
+#
+# It is supposed to be called every 5-10 minutes. It monitors user activity.
+# If no activity is found for MAX_IDLE_TIME seconds then a system shutdown
+# is invoked.
+#
+
+VERBOSE={{ ondemand_server_verbose }}
+MAX_IDLE_TIME={{ ondemand_server_max_idle_time }}
+RUN_FILE=/run/ondemand-server.activity
+
+
+# if the RUN_FILE doesn't exists we have just booted
+if [ -f "$RUN_FILE" ]; then
+  touch $RUN_FILE
+fi
+
+
+####################### COLLECT INFORMATION #######################
+
+# determine how many users are logged onto the system
+num_users=$(users | wc -l)
+if [ "$num_users" -gt 0 ]; then
+  touch $RUN_FILE
+fi
+
+# determine the CPU load
+load_1min=$(awk '{print $1 * 100}' /proc/loadavg)
+load_5min=$(awk '{print $2 * 100}' /proc/loadavg)
+if [ "$load_1min" -gt 50 ] || [ "$load_5min" -gt 50 ]; then
+  touch $RUN_FILE
+fi
+
+# determine the GPU load
+gpu_load=-1
+if [ -x /usr/bin/nvidia-smi ]; then
+  gpu_load=$(nvidia-smi --format=csv,noheader,nounits --query-gpu=utilization.gpu)
+  if [ "$gpu_load" -gt 0 ]; then
+    touch $RUN_FILE
+  fi
+fi
+
+# determine the number of ssh connections
+num_ssh_conns=$(ss -o state established '( dport = :ssh or sport = :ssh )' | wc -l | awk '{print $1 - 1}')
+
+if [ ${VERBOSE} = "True" ]; then
+  echo "$num_users user(s) have $num_ssh_conns SSH connections,"\
+       "CPU load ${load_1min}% (${load_5min}% 5min), GPU load $gpu_load"
+fi
+
+
+######################## SHUTDOWN ON IDLE ########################
+
+runfile_last_touch="$(stat -c %Y $RUN_FILE)"
+time_now="$(date +%s)"
+let timediff="${time_now}-${runfile_last_touch}"
+
+if [ $timediff -gt $MAX_IDLE_TIME ]; then
+  echo "System is idling for $timediff seconds, halting..."
+  /bin/systemctl poweroff
+fi
+

@@ -1,0 +1,6 @@
+[Unit]
+Description=Monitor system usage and shutdown when idle
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/ondemand_server_monitor
