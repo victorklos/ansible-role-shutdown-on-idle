@@ -43,3 +43,7 @@ The timing defaults above make the server halt somewhere between 30 minutes
 (`max_idle_time`) and 64 minutes (`shell_timeout` + `max_idle_time`) after last
 use.
 
+
+## Licence
+
+MIT
