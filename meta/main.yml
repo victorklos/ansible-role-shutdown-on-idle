@@ -1,2 +1,21 @@
----
+galaxy_info:
+  author: Victor Klos
+  description: Role for an on-demand server, making it shutdown after the work is done.
+  license: MIT
+  min_ansible_version: 2.2
+  platforms:
+  - name: Ubuntu
+    versions:
+    - xenial
+    - yakkety
+    - zesty
+  - name: Debian
+    versions:
+    - jessie
+    - sid
+    - squeeze
+    - stretch
+    - wheezy
+  galaxy_tags: []
+
 dependencies: []
