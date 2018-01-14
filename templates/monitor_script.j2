@@ -44,6 +44,9 @@ fi
 
 # determine the number of ssh connections
 num_ssh_conns=$(ss -o state established '( dport = :ssh or sport = :ssh )' | wc -l | awk '{print $1 - 1}')
+if [ "$num_ssh_conns" -gt 0 ]; then
+  touch $RUN_FILE
+fi
 
 # determine idle duration
 runfile_last_touch="$(stat -c %Y $RUN_FILE)"
