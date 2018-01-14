@@ -13,7 +13,7 @@ RUN_FILE=/run/ondemand-server.activity
 
 
 # if the RUN_FILE doesn't exists we have just booted
-if [ -f "$RUN_FILE" ]; then
+if [ ! -f "$RUN_FILE" ]; then
   touch $RUN_FILE
 fi
 
@@ -45,20 +45,24 @@ fi
 # determine the number of ssh connections
 num_ssh_conns=$(ss -o state established '( dport = :ssh or sport = :ssh )' | wc -l | awk '{print $1 - 1}')
 
+# determine idle duration
+runfile_last_touch="$(stat -c %Y $RUN_FILE)"
+time_now="$(date +%s)"
+let idle_duration="${time_now}-${runfile_last_touch}"
+
+
+########################    BE VERBOSE    ########################
 if [ ${VERBOSE} = "True" ]; then
   echo "$num_users user(s) have $num_ssh_conns SSH connections,"\
-       "CPU load ${load_1min}% (${load_5min}% 5min), GPU load $gpu_load"
+       "CPU load ${load_1min}% (${load_5min}% 5min), GPU load $gpu_load,"\
+       "idling for ${idle_duration} seconds."
 fi
 
 
 ######################## SHUTDOWN ON IDLE ########################
 
-runfile_last_touch="$(stat -c %Y $RUN_FILE)"
-time_now="$(date +%s)"
-let timediff="${time_now}-${runfile_last_touch}"
-
-if [ $timediff -gt $MAX_IDLE_TIME ]; then
-  echo "System is idling for $timediff seconds, halting..."
+if [ $idle_duration -gt $MAX_IDLE_TIME ]; then
+  echo "System is idling for $idle_duration seconds, halting..."
   /bin/systemctl poweroff
 fi
 
