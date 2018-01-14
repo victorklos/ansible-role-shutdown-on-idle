@@ -28,7 +28,7 @@ Suitable for headless servers.
     ondemand_server_max_idle_time: 1800
 
   roles:
-    - https://github.com/victorklos/ondemand-server
+    - victorklos.ondemand-server
 ```
 
 
