@@ -1,15 +1,15 @@
 #!/bin/bash
 #
-# This script is part of the ansible role victorklos.ondemand-server
+# This script is part of the ansible role victorklos.shutdown-on-idle
 #
 # It is supposed to be called every 5-10 minutes. It monitors user activity.
 # If no activity is found for MAX_IDLE_TIME seconds then a system shutdown
 # is invoked.
 #
 
-VERBOSE={{ ondemand_server_verbose }}
-MAX_IDLE_TIME={{ ondemand_server_max_idle_time }}
-RUN_FILE=/run/ondemand-server.activity
+VERBOSE={{ shutdown_on_idle_verbose }}
+MAX_IDLE_TIME={{ shutdown_on_idle_max_idle_time }}
+RUN_FILE=/run/shutdown_on_idle.activity
 
 
 # if the RUN_FILE doesn't exists we have just booted

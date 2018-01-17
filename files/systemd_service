@@ -3,4 +3,4 @@ Description=Monitor system usage and shutdown when idle
 
 [Service]
 Type=oneshot
-ExecStart=/usr/local/bin/ondemand_server_monitor
+ExecStart=/usr/local/bin/shutdown_on_idle_monitor

@@ -2,5 +2,5 @@
 - hosts: localhost
   remote_user: root
   roles:
-    # the role is called `ondemand-server` but the directory is named like so:
-    - ansible-role-ondemand-server
+    # the role is called `shutdown-on-idle` but the directory is named like so:
+    - ansible-role-shutdown-on-idle

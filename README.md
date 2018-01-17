@@ -1,15 +1,15 @@
 
-# Ansible role for an on-demand server
+# Ansible role to shutdown a server after the work is done.
 
-Meaning a server that is started on-demand (through Wake-on-LAN) and powers
-off after the work is done. Ideal for special-purpose servers with few users,
-like my deep learning/blender server.
+This role installs a systemd service with timer that monitors a server for
+activity and shuts it down after it has been idling for a specific period.
+Ideal for special-purpose servers with few users, like my deep learning/blender
+server.
 
 ## Features
 
 This ansible role:
 
-- forces auto-logout on inactive shells
 - uses `systemd` timers to periodically
 - monitor ssh connections, CPU and GPU load
 - shuts down the server when it is idling too long
@@ -23,25 +23,28 @@ Suitable for headless servers.
 - hosts: all
 
   vars:
-    ondemand_server_verbose: yes
-    ondemand_server_shell_timeout: 1800
-    ondemand_server_max_idle_time: 1800
+    shutdown_on_idle_max_idle_time: 1800
 
   roles:
-    - victorklos.ondemand-server
+    - victorklos.shutdown-on-idle
 ```
 
 
 ## Supported role variables
 
-See example playbook above, default values as indicated.
+See example playbook above, default value as indicated.
 
 
 ## Notes
 
-The timing defaults above make the server halt somewhere between 30 minutes
-(`max_idle_time`) and 64 minutes (`shell_timeout` + `max_idle_time`) after last
-use.
+Remember to also kick inactive ssh users or otherwise the host will never be
+considered idle.
+
+You can see what is going on by issueing one of these:
+
+    systemctl status shutdown_on_idle.timer             # the timer part
+    systemctl status shutdown_on_idle.service           # the monitoring part
+    journalctl --boot --unit=shutdown_on_idle.service   # all logs since boot
 
 
 ## Licence

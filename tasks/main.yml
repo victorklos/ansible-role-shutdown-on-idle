@@ -1,14 +1,9 @@
 ---
 
-- name: force inactive users to logout
-  template:
-    src: timeout_shell.j2
-    dest: /etc/profile.d/timout_shell.sh
-
 - name: install the monitoring script
   template:
     src: monitor_script.j2
-    dest: /usr/local/bin/ondemand_server_monitor
+    dest: /usr/local/bin/shutdown_on_idle_monitor
     mode: 0755
     owner: root
     group: root
@@ -16,7 +11,7 @@
 - name: install systemd service unit and timer
   copy:
     src: "systemd_{{ item }}"
-    dest: "/etc/systemd/system/ondemand_server.{{ item }}"
+    dest: "/etc/systemd/system/shutdown_on_idle.{{ item }}"
   with_items:
     - service
     - timer
@@ -24,7 +19,7 @@
 - name: enable our service
   systemd:
     daemon_reload: yes
-    name: ondemand_server.timer
+    name: shutdown_on_idle.timer
     enabled: yes
     state: started
 

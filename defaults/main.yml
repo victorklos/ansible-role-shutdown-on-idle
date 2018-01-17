@@ -1,6 +1,5 @@
 ---
 
-ondemand_server_verbose: no
-ondemand_server_shell_timeout: 1800
-ondemand_server_max_idle_time: 1800
+shutdown_on_idle_verbose: no
+shutdown_on_idle_max_idle_time: 1800
 
