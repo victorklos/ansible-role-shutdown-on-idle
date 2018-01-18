@@ -1,4 +1,6 @@
 
+[![Build Status](https://travis-ci.org/victorklos/ansible-role-shutdown-on-idle.svg?branch=master)](https://travis-ci.org/victorklos/ansible-role-shutdown-on-idle)
+
 # Ansible role to shutdown a server after the work is done.
 
 This role installs a systemd service with timer that monitors a server for
