@@ -36,7 +36,7 @@ fi
 # determine the GPU load
 gpu_load=-1
 if [ -x /usr/bin/nvidia-smi ]; then
-  gpu_load=$(nvidia-smi --format=csv,noheader,nounits --query-gpu=utilization.gpu)
+  gpu_load=$(nvidia-smi --format=csv,noheader,nounits --query-gpu=utilization.gpu | sort -n | tail -n1)
   if [ "$gpu_load" -gt 0 ]; then
     touch $RUN_FILE
   fi
