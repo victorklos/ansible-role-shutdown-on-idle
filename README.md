@@ -1,3 +1,8 @@
+# This project is archived
+
+Feel free to fork.
+
+---
 
 [![Build Status](https://travis-ci.org/victorklos/ansible-role-shutdown-on-idle.svg?branch=master)](https://travis-ci.org/victorklos/ansible-role-shutdown-on-idle)
 
